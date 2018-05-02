@@ -10,8 +10,7 @@ frame2.pack(side = RIGHT)
 
 #set default value
 colour = StringVar()
-colour.set('defaut')
-
+colour.set('#ffffff')
 
 #Colour Hex input
 colour_input_txt = Label(frame, text="Colour Hex code")
@@ -22,7 +21,8 @@ colour_entry.pack(side = TOP, padx = 5, pady = 5)
 #go button
 def gen_colour():
     colour.set(colour_entry.get())
-    print(colour)
+    grid.configure(bg=colour.get())
+
 
 
 generate = tkinter.Button(frame, text="Generate!", command=gen_colour)
@@ -32,10 +32,11 @@ label1 = Label(frame, textvariable=colour)
 label1.pack(side = TOP, padx = 5, pady = 5)
 
 #canvas
-grid = tkinter.Canvas(frame2, bg="blue", height=300, width=300)
+grid = tkinter.Canvas(frame2, bg=colour.get(), height=300, width=300)
 
 coord = 10, 50, 240, 210
-arc = grid.create_arc(coord, start=0, extent=150, fill="red")
+grid.create_line(100, 0, 100, 300)
+
 
 grid.pack(side = RIGHT)
 
