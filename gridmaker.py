@@ -1,5 +1,6 @@
 import tkinter
 from tkinter import *
+import ghostscript
 
 #creates frame
 class FRM(Frame):
@@ -75,6 +76,11 @@ def rgb_to_hex(rgbcolour):
     b = rgbcolour[2]
     return("{:02x}{:02x}{:02x}".format(r,g,b))
 
+def save():
+    filename = "image.ps"
+    canvas.postscript(file=filename, colormode='color')
+    gs -o output.png -sDEVICE=pngalpha filename
+
 #go button
 def generate():
     #Reset canvas - delete old grid
@@ -118,7 +124,11 @@ def generate():
             i*(canvas_size/(num_lines+1)), fill=('#' + grid_colour.get()), width=grid_width.get())
 
 #Buttons
+#save button
+save_btn = tkinter.Button(frame, text="Save", command=save)
+save_btn.pack(side = BOTTOM, padx = 5, pady = 5)
 
+#generate button
 generate_btn = tkinter.Button(frame, text="Generate!", command=generate)
 generate_btn.pack(side = BOTTOM, padx = 5, pady = 5)
 
