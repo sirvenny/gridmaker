@@ -18,7 +18,7 @@ frame2.pack(side = RIGHT)
 #set default values
 colour = StringVar(root, value = 'ffffff')
 grid_colour = StringVar(root, value = '000000')
-num_lines = IntVar()
+num_lines = IntVar(root, value=1)
 grid_width = IntVar(root, value = 1)
 fade_width = IntVar(root, value = 0)
 canvas_size = IntVar(root, value = 300)
@@ -80,11 +80,15 @@ def generate():
     #Reset canvas - delete old grid
     canvas.delete("all")
     canvas.update()
-    #change canvas background colour and size
-    canvas.configure(bg=('#' + colour.get()), height=canvas_size.get(), width=canvas_size.get())
+
+    #retrieve canvas size
+    canvas_size = int(canvas_size_entry.get())
 
     #retrive number of lines
-    num_lines = int((num_lines_entry.get()))
+    num_lines = int(num_lines_entry.get())
+
+    #change canvas background colour and size
+    canvas.configure(bg=('#' + colour.get()), height=canvas_size, width=canvas_size)
 
     #convert hex colour to rgb
     bg_rgb_colour = hex_to_rgb(colour.get())
@@ -94,6 +98,7 @@ def generate():
     fade_hex_colour = rgb_to_hex(fade_rgb_colour)
 
     #draw horizontal and vertical lines according to num_lines input
+    #draw fade lines
     for i in range(num_lines + 1):
         fade_vert_lines = canvas.create_line(i*(canvas_size/(num_lines+1)), 0,
             i*(canvas_size/(num_lines+1)), canvas_size, fill=('#' + fade_hex_colour),
@@ -103,6 +108,7 @@ def generate():
             canvas_size, i*(canvas_size/(num_lines+1)), fill=('#' + fade_hex_colour),
             width=(grid_width.get() + 2*fade_width.get()))
 
+    #draw grid lines
     for i in range(num_lines + 1):
         vert_lines = canvas.create_line(i*(canvas_size/(num_lines+1)), 0,
             i*(canvas_size/(num_lines+1)), canvas_size, fill=('#' + grid_colour.get()),
