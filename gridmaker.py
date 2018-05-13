@@ -1,6 +1,7 @@
 import tkinter
 from tkinter import *
-import ghostscript
+from PIL import Image
+import io
 
 #creates frame
 class FRM(Frame):
@@ -19,10 +20,12 @@ frame2.pack(side = RIGHT)
 #set default values
 colour = StringVar(root, value = 'ffffff')
 grid_colour = StringVar(root, value = '000000')
-num_lines = IntVar(root, value=1)
+num_lines = IntVar(root, value = 1)
 grid_width = IntVar(root, value = 1)
 fade_width = IntVar(root, value = 0)
 canvas_size = IntVar(root, value = 300)
+filename = StringVar(root, value = 'image')
+outline_width = IntVar(root, value = 1)
 
 #Canvas size
 canvas_size_label = Label(frame, text="Canvas size (pixels)")
@@ -49,7 +52,7 @@ grid_colour_entry.pack(side = TOP, padx = 5, pady = 5)
 num_lines_label = Label(frame, text="Number of Lines")
 num_lines_label.pack(side = TOP, padx = 5, pady = 5)
 
-num_lines_entry = Entry(frame, bd =5)
+num_lines_entry = Entry(frame, bd =5, textvariable=num_lines)
 num_lines_entry.pack(side = TOP, padx = 5, pady = 5)
 
 #Grid line width
@@ -59,12 +62,26 @@ grid_width_label.pack(side = TOP, padx = 5, pady = 5)
 grid_width_entry = Entry(frame, bd =5, textvariable=grid_width)
 grid_width_entry.pack(side = TOP, padx = 5, pady = 5)
 
+#Outline line width
+outline_width_label = Label(frame, text="Outline line width")
+outline_width_label.pack(side = TOP, padx = 5, pady = 5)
+
+outline_width_entry = Entry(frame, bd =5, textvariable=outline_width)
+outline_width_entry.pack(side = TOP, padx = 5, pady = 5)
+
 #Fade Grid line width
 fade_width_label = Label(frame, text="Fade Grid line width")
 fade_width_label.pack(side = TOP, padx = 5, pady = 5)
 
 fade_width_entry = Entry(frame, bd =5, textvariable=fade_width)
 fade_width_entry.pack(side = TOP, padx = 5, pady = 5)
+
+#Filename
+filename_label = Label(frame, text="File File")
+filename_label.pack(side = TOP, padx = 5, pady = 5)
+
+filename_entry = Entry(frame, bd =5, textvariable=filename)
+filename_entry.pack(side = TOP, padx = 5, pady = 5)
 
 #convert hex colour to rgb
 def hex_to_rgb(hexcolour):
@@ -77,9 +94,11 @@ def rgb_to_hex(rgbcolour):
     return("{:02x}{:02x}{:02x}".format(r,g,b))
 
 def save():
-    filename = "image.ps"
-    canvas.postscript(file=filename, colormode='color')
-    gs -o output.png -sDEVICE=pngalpha filename
+    filename = filename_entry.get() + '.jpg'
+    ps = canvas.postscript(colormode='color')
+    img = Image.open(io.BytesIO(ps.encode('utf-8')))
+    img.save(filename)
+
 
 #go button
 def generate():
@@ -92,6 +111,9 @@ def generate():
 
     #retrive number of lines
     num_lines = int(num_lines_entry.get())
+
+    #retrieve outline width
+    outline_width = outline_width_entry.get()
 
     #change canvas background colour and size
     canvas.configure(bg=('#' + colour.get()), height=canvas_size, width=canvas_size)
@@ -117,11 +139,17 @@ def generate():
     #draw grid lines
     for i in range(num_lines + 1):
         vert_lines = canvas.create_line(i*(canvas_size/(num_lines+1)), 0,
-            i*(canvas_size/(num_lines+1)), canvas_size, fill=('#' + grid_colour.get()),
+            i*(canvas_size/(num_lines+1)), canvas_size + 10, fill=('#' + grid_colour.get()),
             width=grid_width.get())
 
-        horiz_lines = canvas.create_line(0, i*(canvas_size/(num_lines+1)), canvas_size,
+        horiz_lines = canvas.create_line(0, i*(canvas_size/(num_lines+1)), canvas_size + 10,
             i*(canvas_size/(num_lines+1)), fill=('#' + grid_colour.get()), width=grid_width.get())
+
+    #draw outline Lines
+    top_outline = canvas.create_line(1, 1, canvas_size+10, 1, fill=('#' + grid_colour.get()), width=1+int(outline_width)*2)
+    top_outline = canvas.create_line(1, canvas_size+2, canvas_size+10, canvas_size+2, fill=('#' + grid_colour.get()), width=int(outline_width)*2)
+    left_outline = canvas.create_line(1, 1, 1, canvas_size+10, fill=('#' + grid_colour.get()), width=1+int(outline_width)*2)
+    right_outline = canvas.create_line(canvas_size+2, 1, canvas_size+2, canvas_size+10, fill=('#' + grid_colour.get()), width=1+int(outline_width)*2)
 
 #Buttons
 #save button
@@ -135,6 +163,5 @@ generate_btn.pack(side = BOTTOM, padx = 5, pady = 5)
 #canvas
 canvas = tkinter.Canvas(frame2, bg=('#' + colour.get()), height=canvas_size.get(), width=canvas_size.get())
 canvas.pack(side = RIGHT)
-
 
 frame.mainloop()
