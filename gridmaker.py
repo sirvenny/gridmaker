@@ -125,6 +125,9 @@ def generate():
     fade_rgb_colour = [round(x) for x in fade_rgb_colour]
     fade_hex_colour = rgb_to_hex(fade_rgb_colour)
 
+    #draw background as box for postscript save to work
+    background_box = canvas.create_rectangle(0, 0, canvas_size + 10, canvas_size + 10, fill = '#' + colour.get())
+
     #draw horizontal and vertical lines according to num_lines input
     #draw fade lines
     for i in range(num_lines + 1):
@@ -137,7 +140,7 @@ def generate():
             width=(grid_width.get() + 2*fade_width.get()))
 
     #draw grid lines
-    for i in range(num_lines + 1):
+    for i in range(1, num_lines + 1):
         vert_lines = canvas.create_line(i*(canvas_size/(num_lines+1)), 0,
             i*(canvas_size/(num_lines+1)), canvas_size + 10, fill=('#' + grid_colour.get()),
             width=grid_width.get())
@@ -146,10 +149,10 @@ def generate():
             i*(canvas_size/(num_lines+1)), fill=('#' + grid_colour.get()), width=grid_width.get())
 
     #draw outline Lines
-    top_outline = canvas.create_line(1, 1, canvas_size+10, 1, fill=('#' + grid_colour.get()), width=1+int(outline_width)*2)
-    top_outline = canvas.create_line(1, canvas_size+2, canvas_size+10, canvas_size+2, fill=('#' + grid_colour.get()), width=int(outline_width)*2)
-    left_outline = canvas.create_line(1, 1, 1, canvas_size+10, fill=('#' + grid_colour.get()), width=1+int(outline_width)*2)
-    right_outline = canvas.create_line(canvas_size+2, 1, canvas_size+2, canvas_size+10, fill=('#' + grid_colour.get()), width=1+int(outline_width)*2)
+    top_outline = canvas.create_line(0, 0, canvas_size+10, 0, fill=('#' + grid_colour.get()), width=int(outline_width)*1)
+    bottom_outline = canvas.create_line(0, canvas_size + 4, canvas_size+10, canvas_size + 4, fill=('#' + grid_colour.get()), width=int(outline_width)*1)
+    left_outline = canvas.create_line(0, 0, 0, canvas_size+10, fill=('#' + grid_colour.get()), width=int(outline_width)*1)
+    right_outline = canvas.create_line(canvas_size + 4, 0, canvas_size + 4, canvas_size+10, fill=('#' + grid_colour.get()), width=int(outline_width)*1)
 
 #Buttons
 #save button
