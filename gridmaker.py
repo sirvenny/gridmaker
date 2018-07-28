@@ -77,7 +77,7 @@ fade_width_entry = Entry(frame, bd =5, textvariable=fade_width)
 fade_width_entry.pack(side = TOP, padx = 5, pady = 5)
 
 #Filename
-filename_label = Label(frame, text="File File")
+filename_label = Label(frame, text="File name")
 filename_label.pack(side = TOP, padx = 5, pady = 5)
 
 filename_entry = Entry(frame, bd =5, textvariable=filename)
